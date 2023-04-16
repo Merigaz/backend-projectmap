@@ -7,7 +7,7 @@ function connect () {
   mongoose.connect(mongodbUri)
 
   mongoose.connection.once("open", () => {
-    console.log("Connection with mongo OK")
+    console.log("Connection with mongoDB OK")
   })
 
   mongoose.connection.on("error", (error) => {

@@ -14,6 +14,10 @@ const addressSchema = new Schema(
       type: String,
       required: true,
     },
+    markerAddress: {
+      type: String,
+      required: true
+    },
     neighborhood: {
       type: String,
       required: true,
@@ -24,16 +28,20 @@ const addressSchema = new Schema(
     },
     locality: {
       type: String,
-      required: false,
+      required: true,
     },
-    location: {
+    country: {
       type: String,
-      required: false,
+      required: true,
     },
-    formCount: {
+    lat: {
       type: Number,
-      required: false,
+      required: true
     },
+    lng: {
+      type: Number,
+      required: true
+    }
   },
   {
     timestamps: true,
