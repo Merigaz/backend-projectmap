@@ -16,7 +16,7 @@ const addressSchema = new Schema(
     },
     markerAddress: {
       type: String,
-      required: true
+      required: false
     },
     neighborhood: {
       type: String,
