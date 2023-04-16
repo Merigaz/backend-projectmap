@@ -40,7 +40,7 @@ const submitForm = async (req, res) => {
 const listForms = async (req, res) => {
   try {
     const markers = await Address.find()
-    res.status(200).json({message: 'Marcadores encontrados', markers})
+    res.status(200).json({message: 'Marcadores encontrados', data: markers})
   } catch (error) {
     res.status(400).json({message: 'Marcadores no encontrados', data: error})
   }
