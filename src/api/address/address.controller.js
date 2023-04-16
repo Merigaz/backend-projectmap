@@ -7,20 +7,15 @@ const submitForm = async (req, res) => {
     if (idExist) {
       return res.status(400).json({ mensaje: 'El id ya está registrado' })
     }
-    const countExist = await Address.findOne({ formCount })
-    let formCount = 0
-    if (countExist) {
-      return formCount = countExist.formCount +1;
-    } 
+      
     const data = await Address.create({
       name,
       id,
       address,
       neighborhood,
-      date,
-      formCount
+      date
     });
-    res.status(201).json({ message: "Formulario #", data: data.name });
+    res.status(201).json({ message: "Formulario #"});
   } catch (error) {
     res.status(400).json({
       message: "Usuario administrado no pudo ser creado",
