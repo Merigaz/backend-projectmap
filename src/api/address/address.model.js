@@ -28,19 +28,19 @@ const addressSchema = new Schema(
     },
     locality: {
       type: String,
-      required: true,
+      required: false,
     },
     country: {
       type: String,
-      required: true,
+      required: false,
     },
     lat: {
       type: Number,
-      required: true
+      required: false
     },
     lng: {
       type: Number,
-      required: true
+      required: false
     }
   },
   {
