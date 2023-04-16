@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 function connect () {
   
-  const mongodbUri = process.env.MONGODB_URI
+  const mongodbUri = process.env.MONGODB_URI || 27017
 
   mongoose.connect(mongodbUri)
 
