@@ -1,3 +1,4 @@
+require('dotenv').config()
 const Address = require("./address.model");
 const googleMapsClient = require('@google/maps').createClient({
   key: process.env.API_KEY,
