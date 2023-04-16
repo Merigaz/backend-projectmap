@@ -1,10 +1,13 @@
+require('dotenv').config()
 const mongoose = require('mongoose')
 
 function connect () {
   
   const mongodbUri = process.env.MONGODB_URI
 
-  mongoose.connect(mongodbUri)
+  mongoose.connect(mongodbUri, {
+    useNewUrlParser: true
+  })
 
   mongoose.connection.once("open", () => {
     console.log("Connection with mongoDB OK")

@@ -15,6 +15,7 @@ RUN npm install
 
 # Bundle app source
 COPY . .
+# Copy the .env file to the container
+COPY .env .
 
-EXPOSE 8080
 CMD [ "npm", "run","start"]
