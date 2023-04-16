@@ -6,7 +6,7 @@ const adminRoute = require('./api/admin/admin.route')
 const addressRoute = require('./api/address/address.route')
 
 const app = express()
-const port = process.env.PORT || 8080
+const port = 8080
 connect();
 
 app.use(cors({

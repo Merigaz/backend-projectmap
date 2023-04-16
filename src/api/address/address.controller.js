@@ -1,6 +1,6 @@
 const Address = require("./address.model");
 const googleMapsClient = require('@google/maps').createClient({
-  key: 'AIzaSyAyQEEf2zRF4VVGWRV1PmsI3sG5H6DOoh4',
+  key: process.env.API_KEY,
   // Otras opciones de configuración aquí, si es necesario
 })
 
