@@ -31,9 +31,9 @@ const submitForm = async (req, res) => {
     const { lat, lng } = await geocodePromise;
 
     const marker = await Address.create({ name, id, address, markerAddress, neighborhood, date, locality, country, lat, lng });
-    res.status(201).json({ message: 'Id registrado', data: marker });
+    res.status(201).json(marker);
   } catch (error) {
-    res.status(400).json({ message: 'Id no pudo ser registrado', data: error.message });
+    res.status(400).json(error.message);
   }
 };
 
@@ -41,9 +41,9 @@ const submitForm = async (req, res) => {
 const listForms = async (req, res) => {
   try {
     const markers = await Address.find()
-    res.status(200).json({message: 'Marcadores encontrados', data: markers})
+    res.status(200).json(markers)
   } catch (error) {
-    res.status(400).json({message: 'Marcadores no encontrados', data: error})
+    res.status(400).json(error.message)
   }
 }
 
