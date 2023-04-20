@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose")
 
-const adminSchema = new Schema({
+const userSchema = new Schema({
   email: {
     type: String,
     required: true
@@ -8,12 +8,16 @@ const adminSchema = new Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
 }, {
   timestamps: true,
   versionKey: false
 })
 
-const Admin = model('admin', adminSchema)
+const User = model('user', userSchema)
 
-module.exports = Admin
+module.exports = User

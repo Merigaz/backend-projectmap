@@ -1,7 +1,8 @@
+require('dotenv').config()
 const express = require('express');
 const cors = require('cors');
 const { connect } = require('./db');
-const adminRoute = require('./api/admin/admin.route')
+const userRoute = require('./api/user/user.route')
 const addressRoute = require('./api/address/address.route')
 
 const app = express()
@@ -17,7 +18,7 @@ app.use(cors({
 
 app.use(express.json())
 
-app.use('/', adminRoute)
+app.use('/', userRoute)
 app.use('/', addressRoute)
 
 app.listen(port, () => {
