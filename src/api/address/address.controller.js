@@ -72,5 +72,35 @@ const listNeighborhoods = async (req, res) => {
   }
 }
 
+const listDates = async (req, res) => {
+  try {
+    const markers = await Address.find()
+    const dates = markers.map(marker => marker.date)
+    const count = {}
+    dates.forEach(date => {
+      if (count[date]) {
+        count[date]++
+      } else {
+        count[date] = 1
+      }
+    })
 
-module.exports = { submitForm, listForms, listNeighborhoods }
+    const result = Object.keys(count).map(date => {
+      return {
+        name: date,
+        count: count[date]
+      }
+    })
+    for (let i = 0; i < Math.floor(result.length / 2); i++) {
+      const temp = result[i];
+      result[i] = result[result.length - 1 - i];
+      result[result.length - 1 - i] = temp;
+    }
+    res.status(200).json(result)
+  } catch (error) {
+    res.status(400).json(error.message)
+  }
+}
+
+
+module.exports = { submitForm, listForms, listNeighborhoods, listDates }
