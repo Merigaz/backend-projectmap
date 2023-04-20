@@ -37,7 +37,6 @@ const submitForm = async (req, res) => {
   }
 };
 
-
 const listForms = async (req, res) => {
   try {
     const markers = await Address.find()
@@ -47,4 +46,31 @@ const listForms = async (req, res) => {
   }
 }
 
-module.exports = { submitForm, listForms }
+const listNeighborhoods = async (req, res) => {
+  try {
+    const markers = await Address.find()
+    const neighborhoods = markers.map(marker => marker.neighborhood)
+    const count = {}
+    neighborhoods.forEach(str => {
+      if (count[str]) {
+        count[str]++
+      } else {
+        count[str] = 1
+      }
+    })
+
+    const result = Object.keys(count).map(str => {
+      return {
+        name: str,
+        count: count[str]
+      }
+    })
+
+    res.status(200).json(result)
+  } catch (error) {
+    res.status(400).json(error.message)
+  }
+}
+
+
+module.exports = { submitForm, listForms, listNeighborhoods }
