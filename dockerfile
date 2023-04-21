@@ -1,9 +1,6 @@
 # Use the official Node.js image as the base image
 FROM node:16-alpine
 
-# Create app directory
-WORKDIR /backend
-
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
