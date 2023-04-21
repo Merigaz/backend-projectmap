@@ -91,11 +91,15 @@ const listDates = async (req, res) => {
         count: count[date]
       }
     })
-    for (let i = 0; i < Math.floor(result.length / 2); i++) {
-      const temp = result[i];
-      result[i] = result[result.length - 1 - i];
-      result[result.length - 1 - i] = temp;
+    for (let i = 0; i < result.length; i++) {
+      const name = result[i].name;
+      result[i].name = name.substring(4);
     }
+    for (let i = 0; i < result.length; i++) {
+      const name = result[i].name;
+      result[i].name = name.substring(0, 2) + '-' + name.substring(2);
+    }
+
     res.status(200).json(result)
   } catch (error) {
     res.status(400).json(error.message)
