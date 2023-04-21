@@ -76,19 +76,19 @@ const listDates = async (req, res) => {
   try {
     const markers = await Address.find()
     const dates = markers.map(marker => marker.date)
-    const count = {}
+    const Ingresos = {}
     dates.forEach(date => {
-      if (count[date]) {
-        count[date]++
+      if (Ingresos[date]) {
+        Ingresos[date]++
       } else {
-        count[date] = 1
+        Ingresos[date] = 1
       }
     })
 
-    const result = Object.keys(count).map(date => {
+    const result = Object.keys(Ingresos).map(date => {
       return {
         name: date,
-        count: count[date]
+        Ingresos: Ingresos[date]
       }
     })
     for (let i = 0; i < result.length; i++) {

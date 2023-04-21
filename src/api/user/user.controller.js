@@ -3,9 +3,9 @@ const bcrypt = require('bcrypt')
 
 const signup = async (req, res) => {
   try {
-    const { email, password } = req.body
+    const { name,email, password } = req.body
     const passwordHash = await bcrypt.hash(password, 10)
-    const user = await User.create({ email, password: passwordHash })
+    const user = await User.create({ name,email, password: passwordHash })
     
     res.status(201).json({message: 'Usuario creado', data: user.email})
   } catch (error) {
@@ -24,7 +24,9 @@ const login = async (req, res) => {
     if(!validatePassword) {
       throw new Error('Credenciales inválidas')
     }
-    res.status(200).json(user.isAdmin)
+  
+   
+    res.status(200).json({message:"good", name:user.name, isAdmin:user.isAdmin})
   } catch (error) {
     res.status(400).json({message: 'No se pudo iniciar sesión', data: error})
   }
