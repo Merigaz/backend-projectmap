@@ -5,7 +5,6 @@ const googleMapsClient = require('@google/maps').createClient({
   // Otras opciones de configuración aquí, si es necesario
 })
 
-
 const submitForm = async (req, res) => {
   try {
     const { name, id, address, markerAddress, neighborhood, date} = req.body;
@@ -29,8 +28,8 @@ const submitForm = async (req, res) => {
     });
 
     const { lat, lng } = await geocodePromise;
-
-    const marker = await Address.create({ name, id, address, markerAddress, neighborhood, date, locality, country, lat, lng });
+    const formattedNeighborhood = neighborhood.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    const marker = await Address.create({ name, id, address, markerAddress, neighborhood: formattedNeighborhood, date, locality, country, lat, lng });
     res.status(201).json(marker);
   } catch (error) {
     res.status(400).json(error.message);
@@ -43,6 +42,16 @@ const listForms = async (req, res) => {
     res.status(200).json(markers)
   } catch (error) {
     res.status(400).json(error.message)
+  }
+}
+
+const listMarkersByNeighborhoods = async(req, res) => {
+  try {
+    const neighborhoods = req.body.neighborhoods;
+    const markers = await Address.find({ neighborhood: { $in: neighborhoods } }).select('name id date address neighborhood');
+    res.status(200).json(markers);
+  } catch (error) {
+    res.status(400).json(error.message);
   }
 }
 
@@ -106,5 +115,49 @@ const listDates = async (req, res) => {
   }
 }
 
+const listAddressNeigborhoods = async (req, res) => {
+  try {
+    const markers = await Address.find()
+    const newData = markers.map(obj => {
+      return {
+        name: obj.name,
+        id: obj.id,
+        address: obj.address,
+        neighborhood: obj.neighborhood,
+        date: obj.date,
+      };
+    });
+    const arrayNuevo = [];
 
-module.exports = { submitForm, listForms, listNeighborhoods, listDates }
+for (let i = 0; i < newData.length; i++) {
+  const obj = newData[i];
+  const neighborhoodIndex = arrayNuevo.findIndex(elem => elem.neighborhood === obj.neighborhood);
+
+  if (neighborhoodIndex === -1) {
+    const nuevoObj = {
+      neighborhood: obj.neighborhood,
+      datos: [{
+        Nombre: obj.name,
+        CC: obj.id,
+        Dirección: obj.address,
+        Fecha: obj.date,
+      }],
+    };
+
+    arrayNuevo.push(nuevoObj);
+  } else {
+    arrayNuevo[neighborhoodIndex].datos.push({
+      Nombre: obj.name,
+      CC: obj.id,
+      Dirección: obj.address,
+      Fecha: obj.date,
+    });
+  }
+}
+    res.status(200).json(arrayNuevo)
+  } catch (error) {
+    res.status(400).json(error.message)
+  }
+}
+
+module.exports = { submitForm, listForms, listNeighborhoods, listDates, listAddressNeigborhoods, listMarkersByNeighborhoods }
