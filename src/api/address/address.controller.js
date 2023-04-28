@@ -37,8 +37,13 @@ const submitForm = async (req, res) => {
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
+    const formattedName = name
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
     const marker = await Address.create({
-      name,
+      name: formattedName,
       id,
       address,
       optional,
