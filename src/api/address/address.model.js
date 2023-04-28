@@ -14,6 +14,10 @@ const addressSchema = new Schema(
       type: String,
       required: true,
     },
+    optional: {
+      type: String,
+      required: false
+    },
     markerAddress: {
       type: String,
       required: false

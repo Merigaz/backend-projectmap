@@ -7,7 +7,7 @@ const googleMapsClient = require('@google/maps').createClient({
 
 const submitForm = async (req, res) => {
   try {
-    const { name, id, address, markerAddress, neighborhood, date} = req.body;
+    const { name, id, address, optional, markerAddress, neighborhood, date} = req.body;
     const idExistente = await Address.findOne({ id });
     if (idExistente) {
       return res.status(400).json({ mensaje: 'El id ya está registrado' });
@@ -29,7 +29,7 @@ const submitForm = async (req, res) => {
 
     const { lat, lng } = await geocodePromise;
     const formattedNeighborhood = neighborhood.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-    const marker = await Address.create({ name, id, address, markerAddress, neighborhood: formattedNeighborhood, date, locality, country, lat, lng });
+    const marker = await Address.create({ name, id, address, optional, markerAddress, neighborhood: formattedNeighborhood, date, locality, country, lat, lng });
     res.status(201).json(marker);
   } catch (error) {
     res.status(400).json(error.message);
@@ -48,7 +48,7 @@ const listForms = async (req, res) => {
 const listMarkersByNeighborhoods = async(req, res) => {
   try {
     const neighborhoods = req.body.neighborhoods;
-    const markers = await Address.find({ neighborhood: { $in: neighborhoods } }).select('name id date address neighborhood');
+    const markers = await Address.find({ neighborhood: { $in: neighborhoods } }).select('name id date address optional neighborhood');
     res.status(200).json(markers);
   } catch (error) {
     res.status(400).json(error.message);
@@ -123,6 +123,7 @@ const listAddressNeigborhoods = async (req, res) => {
         name: obj.name,
         id: obj.id,
         address: obj.address,
+        optional: obj.optional,
         neighborhood: obj.neighborhood,
         date: obj.date,
       };
@@ -140,6 +141,7 @@ for (let i = 0; i < newData.length; i++) {
         Nombre: obj.name,
         CC: obj.id,
         Dirección: obj.address,
+        InfoAdicional: obj.optional,
         Fecha: obj.date,
       }],
     };
@@ -150,6 +152,7 @@ for (let i = 0; i < newData.length; i++) {
       Nombre: obj.name,
       CC: obj.id,
       Dirección: obj.address,
+      InfoAdicional: obj.optional,
       Fecha: obj.date,
     });
   }
@@ -160,4 +163,26 @@ for (let i = 0; i < newData.length; i++) {
   }
 }
 
-module.exports = { submitForm, listForms, listNeighborhoods, listDates, listAddressNeigborhoods, listMarkersByNeighborhoods }
+const listLatLng = async (req, res) => {
+  try {
+    const markers = await Address.find();
+    const counts = markers.reduce((acc, { lat, lng }) => {
+      const key = `${lat},${lng}`;
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
+    const groupedMarkers = Object.entries(counts).map(([key, count]) => {
+      const [lat, lng] = key.split(',');
+      return {
+        lat: Number(lat),
+        lng: Number(lng),
+        count,
+      };
+    });
+    res.status(200).json(groupedMarkers);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
+
+module.exports = { submitForm, listForms, listNeighborhoods, listDates, listAddressNeigborhoods, listMarkersByNeighborhoods, listLatLng }
