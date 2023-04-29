@@ -28,7 +28,7 @@ const login = async (req, res) => {
    
     res.status(200).json({message:"good", name:user.name, isAdmin:user.isAdmin})
   } catch (error) {
-    res.status(400).json({message: 'No se pudo iniciar sesión', data: error})
+    res.status(400).json({message: 'Credenciales inválidas', data: error})
   }
 }
 
