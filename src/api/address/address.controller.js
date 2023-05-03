@@ -4,15 +4,17 @@ const googleMapsClient = require("@google/maps").createClient({
   key: process.env.API_KEY,
   // Otras opciones de configuración aquí, si es necesario
 });
-
+const axios = require('axios');
 const submitForm = async (req, res) => {
   try {
-    const { name, id, address, optional, markerAddress, neighborhood, date, pollingPlace, pollingAddress } =
+    const { name, id, address, optional, markerAddress, neighborhood, date, pollingPlace } =
       req.body;
     const idExistente = await Address.findOne({ id });
     if (idExistente) {
       return res.status(400).json({ mensaje: "El id ya está registrado" });
     }
+    const placesResponse = await axios.post(`${process.env.URI1}/placesByName`, {pollingPlace});
+    const pollingAddress = placesResponse.data[0].address;
     const locality = "Barranquilla";
     const country = "Colombia";
     const composedAddress = `${markerAddress}, ${locality}, ${country}`;
@@ -42,11 +44,6 @@ const submitForm = async (req, res) => {
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
-      const formattedPollingPlace = pollingPlace
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
     const marker = await Address.create({
       name: formattedName,
       id,
@@ -59,7 +56,7 @@ const submitForm = async (req, res) => {
       country,
       lat,
       lng,
-      pollingPlace: formattedPollingPlace,
+      pollingPlace,
       pollingAddress
     });
     res.status(201).json(marker);

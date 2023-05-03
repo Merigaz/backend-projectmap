@@ -43,4 +43,17 @@ const listPlaces = async (req, res) => {
   }
 }
 
-module.exports = { submitFormPlace, listPlaces }
+
+const placesByName = async (req, res) => {
+  try {
+    const pollingPlace = req.body.pollingPlace;
+    const place = await Place.find({
+      name: { $in: pollingPlace },
+    }).select("name address markerAddress locality country lat lng");
+    res.status(200).json(place);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
+
+module.exports = { submitFormPlace, listPlaces, placesByName }

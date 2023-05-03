@@ -52,7 +52,7 @@ const addressSchema = new Schema(
     },
     pollingAddress: {
       type: String,
-      required: true
+      required: false
     }
   },
   {
