@@ -45,6 +45,14 @@ const addressSchema = new Schema(
     lng: {
       type: Number,
       required: false
+    },
+    pollingPlace: {
+      type: String,
+      required: true
+    },
+    pollingAddress: {
+      type: String,
+      required: true
     }
   },
   {

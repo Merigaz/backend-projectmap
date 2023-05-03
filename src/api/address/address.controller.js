@@ -7,7 +7,7 @@ const googleMapsClient = require("@google/maps").createClient({
 
 const submitForm = async (req, res) => {
   try {
-    const { name, id, address, optional, markerAddress, neighborhood, date } =
+    const { name, id, address, optional, markerAddress, neighborhood, date, pollingPlace, pollingAddress } =
       req.body;
     const idExistente = await Address.findOne({ id });
     if (idExistente) {
@@ -42,6 +42,11 @@ const submitForm = async (req, res) => {
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
+      const formattedPollingPlace = pollingPlace
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
     const marker = await Address.create({
       name: formattedName,
       id,
@@ -54,6 +59,8 @@ const submitForm = async (req, res) => {
       country,
       lat,
       lng,
+      pollingPlace: formattedPollingPlace,
+      pollingAddress
     });
     res.status(201).json(marker);
   } catch (error) {
@@ -75,7 +82,7 @@ const listMarkersByNeighborhoods = async (req, res) => {
     const neighborhoods = req.body.neighborhoods;
     const markers = await Address.find({
       neighborhood: { $in: neighborhoods },
-    }).select("name id date address optional neighborhood");
+    }).select("name id date address optional neighborhood pollingPlace pollingAddress");
     res.status(200).json(markers);
   } catch (error) {
     res.status(400).json(error.message);
