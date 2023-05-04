@@ -111,6 +111,31 @@ const listNeighborhoods = async (req, res) => {
     res.status(400).json(error.message);
   }
 };
+const listPlaces = async (req, res) => {
+  try {
+    const markers = await Address.find();
+    const places = markers.map((marker) => marker.pollingPlace);
+    const count = {};
+    places.forEach((str) => {
+      if (count[str]) {
+        count[str]++;
+      } else {
+        count[str] = 1;
+      }
+    });
+
+    const result = Object.keys(count).map((str) => {
+      return {
+        name: str,
+        count: count[str],
+      };
+    });
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
 
 const listDates = async (req, res) => {
   try {
@@ -198,6 +223,7 @@ const listAddressNeigborhoods = async (req, res) => {
   }
 };
 
+
 const listLatLng = async (req, res) => {
   try {
     const markers = await Address.find({}, {lat: 1, lng: 1, address: 1, neighborhood: 1});
@@ -231,4 +257,5 @@ module.exports = {
   listAddressNeigborhoods,
   listMarkersByNeighborhoods,
   listLatLng,
+  listPlaces,
 };
