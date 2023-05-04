@@ -85,7 +85,21 @@ const listMarkersByNeighborhoods = async (req, res) => {
     res.status(400).json(error.message);
   }
 };
-
+const listMarkersByPlaces = async (req, res) => {
+  try {
+    const pollingPlaces = req.body.pollingPlaces;
+    console.log(pollingPlaces)
+    const markersbyPlaces = await Address.find();
+    console.log(markersbyPlaces)
+    const markers = await Address.find({
+      pollingPlace: { $in: pollingPlaces },
+    }).select("name id date address optional neighborhood pollingPlace pollingAddress");
+    console.log(markers)
+    res.status(200).json(markers);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
 const listNeighborhoods = async (req, res) => {
   try {
     const markers = await Address.find();
@@ -181,6 +195,8 @@ const listAddressNeigborhoods = async (req, res) => {
         address: obj.address,
         optional: obj.optional,
         neighborhood: obj.neighborhood,
+        pollingPlace: obj.pollingPlace,
+        pollingAddress: obj.pollingAddress,
         date: obj.date,
       };
     });
@@ -201,6 +217,8 @@ const listAddressNeigborhoods = async (req, res) => {
               CC: obj.id,
               Dirección: obj.address,
               InfoAdicional: obj.optional,
+              LugardeVotación: obj.pollingPlace,
+              DireccióndeVotación: obj.pollingAddress,
               Fecha: obj.date,
             },
           ],
@@ -213,6 +231,8 @@ const listAddressNeigborhoods = async (req, res) => {
           CC: obj.id,
           Dirección: obj.address,
           InfoAdicional: obj.optional,
+          LugardeVotación: obj.pollingPlace,
+          DireccióndeVotación: obj.pollingAddress,
           Fecha: obj.date,
         });
       }
@@ -223,6 +243,65 @@ const listAddressNeigborhoods = async (req, res) => {
   }
 };
 
+const listAddressPlaces = async (req, res) => {
+  try {
+    const markers = await Address.find();
+    const newData = markers.map((obj) => {
+      return {
+        name: obj.name,
+        id: obj.id,
+        address: obj.address,
+        optional: obj.optional,
+        neighborhood: obj.neighborhood,
+        pollingPlace: obj.pollingPlace,
+        pollingAddress: obj.pollingAddress,
+        date: obj.date,
+      };
+    });
+    const arrayNuevo = [];
+
+    for (let i = 0; i < newData.length; i++) {
+      const obj = newData[i];
+      const placeIndex = arrayNuevo.findIndex(
+        (elem) => elem.pollingPlace === obj.pollingPlace
+      );
+
+      if (placeIndex === -1) {
+        const nuevoObj = {
+          pollingPlace: obj.pollingPlace,
+          datos: [
+            {
+              Nombre: obj.name,
+              CC: obj.id,
+              Dirección: obj.address,
+              InfoAdicional: obj.optional,
+              Barrio: obj.neighborhood,
+              LugardeVotación: obj.pollingPlace,
+              DireccióndeVotación: obj.pollingAddress,
+              Fecha: obj.date,
+            },
+          ],
+        };
+
+        arrayNuevo.push(nuevoObj);
+      } else {
+        arrayNuevo[placeIndex].datos.push({
+          Nombre: obj.name,
+          CC: obj.id,
+          Dirección: obj.address,
+          InfoAdicional: obj.optional,
+          Barrio: obj.neighborhood,
+          LugardeVotación: obj.pollingPlace,
+          DireccióndeVotación: obj.pollingAddress,
+          Fecha: obj.date,
+        });
+      }
+    }
+    res.status(200).json(arrayNuevo);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
 
 const listLatLng = async (req, res) => {
   try {
@@ -258,4 +337,6 @@ module.exports = {
   listMarkersByNeighborhoods,
   listLatLng,
   listPlaces,
+  listMarkersByPlaces,
+  listAddressPlaces
 };
