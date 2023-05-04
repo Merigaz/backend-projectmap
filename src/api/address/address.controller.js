@@ -7,7 +7,7 @@ const googleMapsClient = require("@google/maps").createClient({
 const axios = require('axios');
 const submitForm = async (req, res) => {
   try {
-    const { name, id, address, optional, markerAddress, neighborhood, date, pollingPlace } =
+    const { name, id, phone, address, optional, markerAddress, neighborhood, date, pollingPlace } =
       req.body;
     const idExistente = await Address.findOne({ id });
     if (idExistente) {
@@ -47,6 +47,7 @@ const submitForm = async (req, res) => {
     const marker = await Address.create({
       name: formattedName,
       id,
+      phone,
       address,
       optional,
       markerAddress,
@@ -79,7 +80,7 @@ const listMarkersByNeighborhoods = async (req, res) => {
     const neighborhoods = req.body.neighborhoods;
     const markers = await Address.find({
       neighborhood: { $in: neighborhoods },
-    }).select("name id date address optional neighborhood pollingPlace pollingAddress");
+    }).select("name id date phone address optional neighborhood pollingPlace pollingAddress");
     res.status(200).json(markers);
   } catch (error) {
     res.status(400).json(error.message);
@@ -93,7 +94,7 @@ const listMarkersByPlaces = async (req, res) => {
     console.log(markersbyPlaces)
     const markers = await Address.find({
       pollingPlace: { $in: pollingPlaces },
-    }).select("name id date address optional neighborhood pollingPlace pollingAddress");
+    }).select("name id date phone address optional neighborhood pollingPlace pollingAddress");
     console.log(markers)
     res.status(200).json(markers);
   } catch (error) {
@@ -192,6 +193,7 @@ const listAddressNeigborhoods = async (req, res) => {
       return {
         name: obj.name,
         id: obj.id,
+        phone: obj.phone,
         address: obj.address,
         optional: obj.optional,
         neighborhood: obj.neighborhood,
@@ -215,6 +217,7 @@ const listAddressNeigborhoods = async (req, res) => {
             {
               Nombre: obj.name,
               CC: obj.id,
+              Teléfono: obj.phone,
               Dirección: obj.address,
               InfoAdicional: obj.optional,
               LugardeVotación: obj.pollingPlace,
@@ -229,6 +232,7 @@ const listAddressNeigborhoods = async (req, res) => {
         arrayNuevo[neighborhoodIndex].datos.push({
           Nombre: obj.name,
           CC: obj.id,
+          Teléfono: obj.phone,
           Dirección: obj.address,
           InfoAdicional: obj.optional,
           LugardeVotación: obj.pollingPlace,
@@ -250,6 +254,7 @@ const listAddressPlaces = async (req, res) => {
       return {
         name: obj.name,
         id: obj.id,
+        phone: obj.phone,
         address: obj.address,
         optional: obj.optional,
         neighborhood: obj.neighborhood,
@@ -273,6 +278,7 @@ const listAddressPlaces = async (req, res) => {
             {
               Nombre: obj.name,
               CC: obj.id,
+              Teléfono: obj.phone,
               Dirección: obj.address,
               InfoAdicional: obj.optional,
               Barrio: obj.neighborhood,
@@ -288,6 +294,7 @@ const listAddressPlaces = async (req, res) => {
         arrayNuevo[placeIndex].datos.push({
           Nombre: obj.name,
           CC: obj.id,
+          Teléfono: obj.phone,
           Dirección: obj.address,
           InfoAdicional: obj.optional,
           Barrio: obj.neighborhood,
