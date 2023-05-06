@@ -14,7 +14,7 @@ const submitForm = async (req, res) => {
     if (idExistente) {
       return res.status(400).json({ mensaje: "El id ya está registrado" });
     }
-    //const placesResponse = await axios.post(`${process.env.URI1}/placesByName`, {pollingPlace});
+    const placesResponse = await axios.post(`${process.env.URI1}/placesByName`, {pollingPlace});
     const pollingAddress = placesResponse.data[0].address;
     const locality = "Barranquilla";
     const country = "Colombia";
@@ -59,7 +59,7 @@ const submitForm = async (req, res) => {
       lat,
       lng,
       pollingPlace,
-      //pollingAddress
+      pollingAddress
     });
     res.status(201).json(marker);
   } catch (error) {
