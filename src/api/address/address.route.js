@@ -11,7 +11,8 @@ const {
   listAddressPlaces,
   listMarkersByPlaces,
   findAddressById,
-  deleteAddressById
+  deleteAddressById,
+  updateAddressById
   } = require('./address.controller')
 
 const router = express.Router()
@@ -28,5 +29,6 @@ router.post('/markersByPlaces', listMarkersByPlaces)
 router.get('/places', listAddressPlaces)
 router.post('/addressById', findAddressById)
 router.post('/deleteAddress', deleteAddressById)
+router.post('/updateAddressById', updateAddressById)
 
 module.exports = router

@@ -361,6 +361,59 @@ const deleteAddressById = async (req, res) => {
   }
 };
 
+const updateAddressById = async (req, res) => {
+  try {
+    const { previousId, name, id, phone, address, optional, markerAddress, neighborhood, date, pollingPlace } =
+    req.body;
+    const addressToUpdate = await Address.findOne({ id: previousId });
+    if (!addressToUpdate) {
+      return res.status(404).json({ message: "Dirección no encontrada" });
+    }
+
+    // Actualiza los datos del lugar de votación
+    addressToUpdate.name = name;
+    addressToUpdate.id = id;
+    addressToUpdate.phone = phone;
+    addressToUpdate.address = address;
+    addressToUpdate.optional = optional;
+    addressToUpdate.markerAddress = markerAddress;
+    addressToUpdate.neighborhood = neighborhood;
+    addressToUpdate.date = date;
+    addressToUpdate.pollingPlace = pollingPlace;
+    
+    const locality = "Barranquilla";
+    const country = "Colombia";
+    const composedAddress = `${markerAddress}, ${locality}, ${country}`;
+    const geocodePromise = new Promise((resolve, reject) => {
+      googleMapsClient.geocode(
+        { address: composedAddress },
+        function (err, response) {
+          if (!err) {
+            var lat = response.json.results[0].geometry.location.lat;
+            var lng = response.json.results[0].geometry.location.lng;
+            resolve({ lat, lng });
+          } else {
+            reject(err);
+          }
+        }
+      );
+    });
+
+    const { lat, lng } = await geocodePromise;
+    addressToUpdate.lat = lat;
+    addressToUpdate.lng = lng;
+    
+    const placesResponse = await axios.post(`${process.env.URI1}/placesByName`, { pollingPlace });
+    addressToUpdate.pollingAddress = placesResponse.data[0].address;
+
+    const updatedAddress = await addressToUpdate.save();
+
+    res.status(200).json({ message: "Dirección actualizada", updatedAddress });
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
+
 module.exports = {
   submitForm,
   listForms,
@@ -373,5 +426,6 @@ module.exports = {
   listMarkersByPlaces,
   listAddressPlaces,
   findAddressById,
-  deleteAddressById
+  deleteAddressById,
+  updateAddressById
 };
