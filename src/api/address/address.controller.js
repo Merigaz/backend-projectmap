@@ -5,6 +5,7 @@ const googleMapsClient = require("@google/maps").createClient({
   // Otras opciones de configuración aquí, si es necesario
 });
 const axios = require('axios');
+
 const submitForm = async (req, res) => {
   try {
     const { name, id, phone, address, optional, markerAddress, neighborhood, date, pollingPlace } =
@@ -335,6 +336,31 @@ const listLatLng = async (req, res) => {
 
 };
 
+const findAddressById = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const addressById = await Address.findOne({ id });
+    addressById ?
+    res.status(201).json({ message: "Datos encontrados", addressById })
+    :
+    res.status(201).json({ message: "Datos no encontrados" })
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
+
+const deleteAddressById = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const addressDeleted = await Address.findOne({ id });
+    const deleted = await Address.deleteOne({ id })
+
+    res.status(201).json({message: "Dirección eliminada", addressDeleted});
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
+
 module.exports = {
   submitForm,
   listForms,
@@ -345,5 +371,7 @@ module.exports = {
   listLatLng,
   listPlaces,
   listMarkersByPlaces,
-  listAddressPlaces
+  listAddressPlaces,
+  findAddressById,
+  deleteAddressById
 };

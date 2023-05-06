@@ -1,5 +1,18 @@
 const express = require('express')
-const { submitForm, listForms, listNeighborhoods, listDates, listAddressNeigborhoods, listMarkersByNeighborhoods, listLatLng, listPlaces, listAddressPlaces, listMarkersByPlaces } = require('./address.controller')
+const { 
+  submitForm, 
+  listForms,
+  listNeighborhoods,
+  listDates,
+  listAddressNeigborhoods,
+  listMarkersByNeighborhoods,
+  listLatLng,
+  listPlaces,
+  listAddressPlaces,
+  listMarkersByPlaces,
+  findAddressById,
+  deleteAddressById
+  } = require('./address.controller')
 
 const router = express.Router()
 
@@ -13,5 +26,7 @@ router.get('/latlng', listLatLng)
 router.get('/listplaces', listPlaces)
 router.post('/markersByPlaces', listMarkersByPlaces)
 router.get('/places', listAddressPlaces)
+router.post('/addressById', findAddressById)
+router.post('/deleteAddress', deleteAddressById)
 
 module.exports = router

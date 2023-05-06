@@ -11,6 +11,10 @@ const submitFormPlace = async (req, res) => {
     if (addressExistente) {
       return res.status(400).json({ mensaje: 'El lugar de votación ya está registrado' });
     }
+    const nameExistente = await Place.findOne({ name });
+    if (nameExistente) {
+      return res.status(400).json({ mensaje: 'El lugar de votación ya está registrado' });
+    }
     const locality = 'Barranquilla';
     const country = 'Colombia'
     const composedAddress = `${markerAddress}, ${locality}, ${country}`;
@@ -55,5 +59,28 @@ const placesByName = async (req, res) => {
     res.status(400).json(error.message);
   }
 };
+const findPlaceByName = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const placeByName = await Place.findOne({ name });
+    placeByName ?
+    res.status(201).json({ message: "Datos encontrados", placeByName })
+    :
+    res.status(201).json({ message: "Datos no encontrados" })
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
+const deletePlaceByName = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const placeDeleted = await Place.findOne({ name });
+    const deleted = await Place.deleteOne({ name })
 
-module.exports = { submitFormPlace, listPlaces, placesByName }
+    res.status(201).json({message: "Lugar de votación eliminado", placeDeleted});
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
+
+module.exports = { submitFormPlace, listPlaces, placesByName, findPlaceByName, deletePlaceByName }
