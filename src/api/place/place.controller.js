@@ -83,4 +83,25 @@ const deletePlaceByName = async (req, res) => {
   }
 };
 
-module.exports = { submitFormPlace, listPlaces, placesByName, findPlaceByName, deletePlaceByName }
+const updatePlaceByName = async (req, res) => {
+  try {
+    const { previousName, name, address, markerAddress } = req.body;
+    const placeToUpdate = await Place.findOne({ name: previousName });
+
+    if (!placeToUpdate) {
+      return res.status(404).json({ message: "Lugar de votación no encontrado" });
+    }
+
+    // Actualiza los datos del lugar de votación
+    placeToUpdate.name = name;
+    placeToUpdate.address = address;
+    placeToUpdate.markerAddress = markerAddress;
+    const updatedPlace = await placeToUpdate.save();
+
+    res.status(200).json({ message: "Lugar de votación actualizado", updatedPlace });
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
+
+module.exports = { submitFormPlace, listPlaces, placesByName, findPlaceByName, deletePlaceByName, updatePlaceByName }
