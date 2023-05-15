@@ -57,6 +57,10 @@ const addressSchema = new Schema(
     pollingAddress: {
       type: String,
       required: false
+    },
+    votationTable: {
+      type: String,
+      required: true
     }
   },
   {

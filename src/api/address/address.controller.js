@@ -8,7 +8,7 @@ const axios = require('axios');
 
 const submitForm = async (req, res) => {
   try {
-    const { name, id, phone, address, optional, markerAddress, neighborhood, date, pollingPlace } =
+    const { name, id, phone, address, optional, markerAddress, neighborhood, date, pollingPlace, votationTable } =
       req.body;
     const idExistente = await Address.findOne({ id });
     if (idExistente) {
@@ -59,7 +59,8 @@ const submitForm = async (req, res) => {
       lat,
       lng,
       pollingPlace,
-      pollingAddress
+      pollingAddress,
+      votationTable
     });
     res.status(201).json(marker);
   } catch (error) {
@@ -81,7 +82,7 @@ const listMarkersByNeighborhoods = async (req, res) => {
     const neighborhoods = req.body.neighborhoods;
     const markers = await Address.find({
       neighborhood: { $in: neighborhoods },
-    }).select("name id date phone address optional neighborhood pollingPlace pollingAddress");
+    }).select("name id date phone address optional neighborhood pollingPlace pollingAddress votationTable");
     res.status(200).json(markers);
   } catch (error) {
     res.status(400).json(error.message);
@@ -95,7 +96,7 @@ const listMarkersByPlaces = async (req, res) => {
     console.log(markersbyPlaces)
     const markers = await Address.find({
       pollingPlace: { $in: pollingPlaces },
-    }).select("name id date phone address optional neighborhood pollingPlace pollingAddress");
+    }).select("name id date phone address optional neighborhood pollingPlace pollingAddress votationTable");
     console.log(markers)
     res.status(200).json(markers);
   } catch (error) {
@@ -200,6 +201,7 @@ const listAddressNeigborhoods = async (req, res) => {
         neighborhood: obj.neighborhood,
         pollingPlace: obj.pollingPlace,
         pollingAddress: obj.pollingAddress,
+        votationTable: obj. votationTable,
         date: obj.date,
       };
     });
@@ -223,6 +225,7 @@ const listAddressNeigborhoods = async (req, res) => {
               InfoAdicional: obj.optional,
               LugardeVotación: obj.pollingPlace,
               DireccióndeVotación: obj.pollingAddress,
+              MesadeVotación: obj.votationTable,
               Fecha: obj.date,
             },
           ],
@@ -238,6 +241,7 @@ const listAddressNeigborhoods = async (req, res) => {
           InfoAdicional: obj.optional,
           LugardeVotación: obj.pollingPlace,
           DireccióndeVotación: obj.pollingAddress,
+          MesadeVotación: obj.votationTable,
           Fecha: obj.date,
         });
       }
@@ -261,6 +265,7 @@ const listAddressPlaces = async (req, res) => {
         neighborhood: obj.neighborhood,
         pollingPlace: obj.pollingPlace,
         pollingAddress: obj.pollingAddress,
+        votationTable: obj.votationTable,
         date: obj.date,
       };
     });
@@ -285,6 +290,7 @@ const listAddressPlaces = async (req, res) => {
               Barrio: obj.neighborhood,
               LugardeVotación: obj.pollingPlace,
               DireccióndeVotación: obj.pollingAddress,
+              MesadeVotación: obj.votationTable,
               Fecha: obj.date,
             },
           ],
@@ -301,6 +307,7 @@ const listAddressPlaces = async (req, res) => {
           Barrio: obj.neighborhood,
           LugardeVotación: obj.pollingPlace,
           DireccióndeVotación: obj.pollingAddress,
+          MesadeVotación: obj.votationTable,
           Fecha: obj.date,
         });
       }
@@ -363,7 +370,7 @@ const deleteAddressById = async (req, res) => {
 
 const updateAddressById = async (req, res) => {
   try {
-    const { previousId, name, id, phone, address, optional, markerAddress, neighborhood, date, pollingPlace } =
+    const { previousId, name, id, phone, address, optional, markerAddress, neighborhood, date, pollingPlace, votationTable } =
     req.body;
     const addressToUpdate = await Address.findOne({ id: previousId });
     if (!addressToUpdate) {
@@ -380,6 +387,7 @@ const updateAddressById = async (req, res) => {
     addressToUpdate.neighborhood = neighborhood;
     addressToUpdate.date = date;
     addressToUpdate.pollingPlace = pollingPlace;
+    addressToUpdate.votationTable = votationTable;
     
     const locality = "Barranquilla";
     const country = "Colombia";
